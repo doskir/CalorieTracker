@@ -13,7 +13,6 @@ namespace CalorieTracker
     public partial class Form1 : Form
     {
         private int DailyMaxCalories = 2000;
-        private int WeeklyMaxCalories = 2000*7;
         private Sql sql;
         private List<Food> foods = new List<Food>();
         private List<Meal> meals = new List<Meal>(); 
@@ -21,10 +20,36 @@ namespace CalorieTracker
         {
             InitializeComponent();
             sql = new Sql();
+            LoadSettings();
             LoadFoods();
             UpdateFoodList();
             LoadMeals();
             UpdateMealTree();
+        }
+        private void LoadSettings()
+        {
+            sql.SqlConnection.Open();
+            SQLiteCommand command = sql.SqlConnection.CreateCommand();
+            command.CommandText = "SELECT name,value FROM settings";
+            using(SQLiteDataReader reader = command.ExecuteReader())
+            {
+                if(reader.HasRows)
+                {
+                    while(reader.Read())
+                    {
+                        string settingName = reader.GetString(0);
+                        switch(settingName)
+                        {
+                            case "dailymaxkcal":
+                                {
+                                    DailyMaxCalories = int.Parse(reader.GetString(1));
+                                    break;
+                                }
+                        }
+                    }
+                }
+            }
+            sql.SqlConnection.Close();
         }
         private void UpdateFoodList()
         {
@@ -97,7 +122,7 @@ namespace CalorieTracker
                         dayNode.BackColor = Color.LightGreen;
                     weekNode.Nodes.Add(dayNode);
                 }
-                if (week.TotalKCal > WeeklyMaxCalories)
+                if (week.TotalKCal > DailyMaxCalories*7)
                     weekNode.BackColor = Color.Firebrick;
                 else
                     weekNode.BackColor = Color.LightGreen;
@@ -296,6 +321,13 @@ namespace CalorieTracker
             AddFood(name, kcalPer100g, grams);
             Food food = foods.Where(f => f.Name == name).Single();
             AddMeal(food, DateTime.Now);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            SettingsForm settingsForm = new SettingsForm();
+            settingsForm.maskedTextBox1.Text = DailyMaxCalories.ToString();
+            settingsForm.Show();
         }
     }
 }
