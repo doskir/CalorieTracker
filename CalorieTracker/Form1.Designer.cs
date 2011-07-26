@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("2011.07.25");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("2011.07.25-31", new System.Windows.Forms.TreeNode[] {
-            treeNode3});
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("2011.07.25");
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("2011.07.25-31", new System.Windows.Forms.TreeNode[] {
+            treeNode5});
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -41,12 +41,12 @@
             // 
             this.treeView1.Location = new System.Drawing.Point(13, 13);
             this.treeView1.Name = "treeView1";
-            treeNode3.Name = "Node5";
-            treeNode3.Text = "2011.07.25";
-            treeNode4.Name = "Node4";
-            treeNode4.Text = "2011.07.25-31";
+            treeNode5.Name = "Node5";
+            treeNode5.Text = "2011.07.25";
+            treeNode6.Name = "Node4";
+            treeNode6.Text = "2011.07.25-31";
             this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode4});
+            treeNode6});
             this.treeView1.Size = new System.Drawing.Size(199, 350);
             this.treeView1.TabIndex = 0;
             // 
@@ -61,6 +61,7 @@
             this.listView1.TabIndex = 1;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
+            this.listView1.ItemActivate += new System.EventHandler(this.listView1_ItemActivate);
             // 
             // columnHeader1
             // 

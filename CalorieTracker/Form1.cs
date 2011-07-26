@@ -80,6 +80,29 @@ namespace CalorieTracker
                 }
             }
         }
+
+        private void listView1_ItemActivate(object sender, EventArgs e)
+        {
+            ListViewItem lvi = listView1.SelectedItems[0];
+            if(MessageBox.Show("Add " + lvi.Name + " ?","",MessageBoxButtons.YesNo)== DialogResult.Yes)
+            {
+                Food food = foods.Where(f => f.Name == lvi.Name).Single();
+                AddMeal(food, DateTime.Now);
+
+            }
+        }
+        private void AddMeal(Food food,DateTime dateTime)
+        {
+            sql.SqlConnection.Open();
+            SQLiteCommand command = sql.SqlConnection.CreateCommand();
+            command.Parameters.Add("@foodId", DbType.VarNumeric);
+            command.Parameters.Add("@date", DbType.DateTime);
+            command.CommandText = "INSERT INTO meals (foodId,date) VALUES(@foodId,@date)";
+            command.ExecuteNonQuery();
+            sql.SqlConnection.Close();
+            LoadMeals();
+            //TODO: SHOW MEALS!!!
+        }
        
     }
 }
