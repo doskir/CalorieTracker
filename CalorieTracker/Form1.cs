@@ -71,14 +71,14 @@ namespace CalorieTracker
             foreach (Week week in weeks)
             {
                 week.Refresh();
-                string weekString = week.StartDate.ToString("yyyy.mm.dd") + "-" +
+                string weekString = week.StartDate.ToString("yyyy.MM.dd") + "-" +
                                     week.StopDate.ToString("dd") + " | " + week.TotalKCal.ToString();
                 TreeNode weekNode = new TreeNode(weekString);
                 if (week.Contains(DateTime.Now))
                     weekNode.Expand();
                 foreach (Day day in week.Days)
                 {
-                    string dayString = day.StartDate.ToString("yyyy.mm.dd") + " | " + day.TotalKCal.ToString();
+                    string dayString = day.StartDate.ToString("yyyy.MM.dd") + " | " + day.TotalKCal.ToString();
                     TreeNode dayNode = new TreeNode(dayString);
                     if (day.Contains(DateTime.Now))
                         dayNode.Expand();

@@ -49,6 +49,7 @@
             treeNode2});
             this.treeView1.Size = new System.Drawing.Size(165, 350);
             this.treeView1.TabIndex = 0;
+            this.treeView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeView1_KeyDown);
             // 
             // listView1
             // 
