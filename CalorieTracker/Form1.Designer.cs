@@ -168,7 +168,7 @@
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.treeView1);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "CalorieTracker";
             this.ResumeLayout(false);
             this.PerformLayout();
 
