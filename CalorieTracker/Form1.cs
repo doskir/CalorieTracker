@@ -85,7 +85,6 @@ namespace CalorieTracker
                     foreach (Meal meal in day.Meals)
                     {
                         string mealString = meal.Date.ToString("HH:mm") + " | " + meal.Food.Name + " | "
-                        string mealString = meal.Date.ToString("hh:mm") + " | " + meal.Food.Name + " | "
                                             + meal.Food.TotalKcal;
                         TreeNode mealNode = new TreeNode(mealString);
                         dayNode.Nodes.Add(mealNode);
@@ -174,6 +173,7 @@ namespace CalorieTracker
             LoadMeals();
             UpdateMealTree();
         }
+       
         public class Day
         {
             public DateTime StartDate { get; set; }
@@ -227,6 +227,41 @@ namespace CalorieTracker
             {
                 return date >= StartDate && date <= StopDate;
             }
+        }
+
+        private void treeView1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Delete && treeView1.SelectedNode != null)
+            {
+                TreeNode node = treeView1.SelectedNode;
+                if (node.Level != 2)
+                    return;
+
+                string[] parts = node.Text.Split(new string[] { " | " }, StringSplitOptions.RemoveEmptyEntries);
+                if (MessageBox.Show("Do you want to delete " + node.Text + " ?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    string time = parts[0];
+                    string date = node.Parent.Text.Substring(0, node.Parent.Text.IndexOf(' '));
+                    DateTime dt = DateTime.Parse(date + "T" + time);
+                    string name = parts[1];
+                    Meal meal =
+                        meals.Where(m => m.Food.Name == name && m.Date.Hour == dt.Hour && m.Date.Minute == dt.Minute)
+                            .Last();
+                    RemoveMeal(meal);
+                }
+
+            }
+        }
+        private void RemoveMeal(Meal meal)
+        {
+            sql.SqlConnection.Open();
+            SQLiteCommand command = sql.SqlConnection.CreateCommand();
+            command.Parameters.AddWithValue("@mealId", meal.Id);
+            command.CommandText = "DELETE FROM meals WHERE id=@mealId";
+            command.ExecuteNonQuery();
+            sql.SqlConnection.Close();
+            LoadMeals();
+            UpdateMealTree();
         }
     }
 }
