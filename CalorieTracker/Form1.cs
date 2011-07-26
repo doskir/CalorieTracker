@@ -13,13 +13,15 @@ namespace CalorieTracker
     public partial class Form1 : Form
     {
         private Sql sql;
-        private List<Food> foods = new List<Food>(); 
+        private List<Food> foods = new List<Food>();
+        private List<Meal> meals = new List<Meal>(); 
         public Form1()
         {
             InitializeComponent();
             sql = new Sql();
             LoadFoods();
             UpdateFoodList();
+            LoadMeals();
         }
         private void UpdateFoodList()
         {
@@ -56,6 +58,27 @@ namespace CalorieTracker
                 }
             }
             sql.SqlConnection.Close();
+        }
+        private void LoadMeals()
+        {
+            meals.Clear();
+            sql.SqlConnection.Open();
+            SQLiteCommand command = sql.SqlConnection.CreateCommand();
+            command.CommandText = "SELECT * FROM meals";
+            using(SQLiteDataReader reader = command.ExecuteReader())
+            {
+                if(reader.HasRows)
+                {
+                    while(reader.Read())
+                    {
+                        int id = reader.GetInt32(0);
+                        int foodId = reader.GetInt32(1);
+                        DateTime date = reader.GetDateTime(2);
+                        Food food = foods.Where(f => f.Id == foodId).Single();
+                        Meal meal = new Meal(id, food, date);
+                    }
+                }
+            }
         }
        
     }
