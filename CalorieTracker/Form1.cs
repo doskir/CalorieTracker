@@ -84,6 +84,7 @@ namespace CalorieTracker
                         dayNode.Expand();
                     foreach (Meal meal in day.Meals)
                     {
+                        string mealString = meal.Date.ToString("HH:mm") + " | " + meal.Food.Name + " | "
                         string mealString = meal.Date.ToString("hh:mm") + " | " + meal.Food.Name + " | "
                                             + meal.Food.TotalKcal;
                         TreeNode mealNode = new TreeNode(mealString);
