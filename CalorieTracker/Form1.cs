@@ -42,6 +42,8 @@ namespace CalorieTracker
         private void UpdateMealTree()
         {
             treeView1.Nodes.Clear();
+            if (meals.Count == 0)
+                return;
             List<Meal> mealsByDate = meals.OrderBy(m => m.Date).ToList();
 
             DateTime firstMealTime = mealsByDate.First().Date;
