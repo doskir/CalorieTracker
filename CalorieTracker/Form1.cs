@@ -265,5 +265,37 @@ namespace CalorieTracker
             LoadMeals();
             UpdateMealTree();
         }
+        private void AddFood(string name,int kcalPer100g,int grams)
+        {
+            sql.SqlConnection.Open();
+            SQLiteCommand command = sql.SqlConnection.CreateCommand();
+            command.Parameters.AddWithValue("@foodName", name);
+            command.Parameters.AddWithValue("@kcalPer100g", kcalPer100g);
+            command.Parameters.AddWithValue("@grams", grams);
+            command.Parameters.AddWithValue("@hidden", false);
+            command.CommandText =
+                "INSERT INTO food (name,kcalper100g,grams,hidden) VALUES(@foodName,@kcalPer100g,@grams,@hidden)";
+            command.ExecuteNonQuery();
+            sql.SqlConnection.Close();
+            LoadFoods();
+            UpdateFoodList();
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string name = textBox1.Text;
+            int kcalPer100g = int.Parse(textBox2.Text);
+            int grams = int.Parse(textBox3.Text);
+            AddFood(name, kcalPer100g, grams);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            string name = textBox1.Text;
+            int kcalPer100g = int.Parse(textBox2.Text);
+            int grams = int.Parse(textBox3.Text);
+            AddFood(name, kcalPer100g, grams);
+            Food food = foods.Where(f => f.Name == name).Single();
+            AddMeal(food, DateTime.Now);
+        }
     }
 }
