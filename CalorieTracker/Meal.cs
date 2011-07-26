@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CalorieTracker
 {
-    class Meal
+    public class Meal
     {
         public int Id;
         public Food Food;
