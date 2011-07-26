@@ -56,9 +56,9 @@
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
-            this.listView1.Location = new System.Drawing.Point(210, 12);
+            this.listView1.Location = new System.Drawing.Point(215, 12);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(208, 351);
+            this.listView1.Size = new System.Drawing.Size(205, 351);
             this.listView1.TabIndex = 1;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -67,7 +67,7 @@
             // columnHeader1
             // 
             this.columnHeader1.Text = "Name";
-            this.columnHeader1.Width = 171;
+            this.columnHeader1.Width = 140;
             // 
             // columnHeader2
             // 
