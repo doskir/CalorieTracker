@@ -53,7 +53,7 @@ namespace CalorieTracker
         }
         private void UpdateFoodList()
         {
-            listView1.Items.Clear();
+            foodListView.Items.Clear();
             foreach(Food food in foods)
             {
                 if (food.Hidden)
@@ -61,12 +61,12 @@ namespace CalorieTracker
                 ListViewItem lvi = new ListViewItem(food.Name);
                 lvi.Name = food.Name;
                 lvi.SubItems.Add(food.TotalKcal.ToString());
-                listView1.Items.Add(lvi);
+                foodListView.Items.Add(lvi);
             }
         }
         private void UpdateMealTree()
         {
-            treeView1.Nodes.Clear();
+            mealTreeView.Nodes.Clear();
             if (meals.Count == 0)
                 return;
             List<Meal> mealsByDate = meals.OrderBy(m => m.Date).ToList();
@@ -126,7 +126,7 @@ namespace CalorieTracker
                     weekNode.BackColor = Color.Firebrick;
                 else
                     weekNode.BackColor = Color.LightGreen;
-                treeView1.Nodes.Add(weekNode);
+                mealTreeView.Nodes.Add(weekNode);
             }
         }
 
@@ -134,7 +134,7 @@ namespace CalorieTracker
         {
             foods.Clear();
             sql.SqlConnection.Open();
-            System.Data.SQLite.SQLiteCommand command = sql.SqlConnection.CreateCommand();
+            SQLiteCommand command = sql.SqlConnection.CreateCommand();
             command.CommandText = "SELECT * FROM food ORDER BY name";
             using(SQLiteDataReader reader = command.ExecuteReader())
             {
@@ -176,17 +176,6 @@ namespace CalorieTracker
                 }
             }
             sql.SqlConnection.Close();
-        }
-
-        private void listView1_ItemActivate(object sender, EventArgs e)
-        {
-            ListViewItem lvi = listView1.SelectedItems[0];
-            if(MessageBox.Show("Add " + lvi.Name + " ?","",MessageBoxButtons.YesNo)== DialogResult.Yes)
-            {
-                Food food = foods.Where(f => f.Name == lvi.Name).Single();
-                AddMeal(food, DateTime.Now);
-
-            }
         }
         private void AddMeal(Food food,DateTime dateTime)
         {
@@ -255,30 +244,6 @@ namespace CalorieTracker
                 return date >= StartDate && date <= StopDate;
             }
         }
-
-        private void treeView1_KeyDown(object sender, KeyEventArgs e)
-        {
-            if(e.KeyCode == Keys.Delete && treeView1.SelectedNode != null)
-            {
-                TreeNode node = treeView1.SelectedNode;
-                if (node.Level != 2)
-                    return;
-
-                string[] parts = node.Text.Split(new string[] { " | " }, StringSplitOptions.RemoveEmptyEntries);
-                if (MessageBox.Show("Do you want to delete " + node.Text + " ?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                {
-                    string time = parts[0];
-                    string date = node.Parent.Text.Substring(0, node.Parent.Text.IndexOf(' '));
-                    DateTime dt = DateTime.Parse(date + "T" + time);
-                    string name = parts[1];
-                    Meal meal =
-                        meals.Where(m => m.Food.Name == name && m.Date.Hour == dt.Hour && m.Date.Minute == dt.Minute)
-                            .Last();
-                    RemoveMeal(meal);
-                }
-
-            }
-        }
         private void RemoveMeal(Meal meal)
         {
             sql.SqlConnection.Open();
@@ -307,17 +272,17 @@ namespace CalorieTracker
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            string name = textBox1.Text;
-            int kcalPer100g = int.Parse(textBox2.Text);
-            int grams = int.Parse(textBox3.Text);
+            string name = foodNameTextBox.Text;
+            int kcalPer100g = int.Parse(caloriesPer100gTextBox.Text);
+            int grams = int.Parse(gramsTextBox.Text);
             AddFood(name, kcalPer100g, grams);
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            string name = textBox1.Text;
-            int kcalPer100g = int.Parse(textBox2.Text);
-            int grams = int.Parse(textBox3.Text);
+            string name = foodNameTextBox.Text;
+            int kcalPer100g = int.Parse(caloriesPer100gTextBox.Text);
+            int grams = int.Parse(gramsTextBox.Text);
             AddFood(name, kcalPer100g, grams);
             Food food = foods.Where(f => f.Name == name).Single();
             AddMeal(food, DateTime.Now);
@@ -328,6 +293,41 @@ namespace CalorieTracker
             SettingsForm settingsForm = new SettingsForm();
             settingsForm.maskedTextBox1.Text = DailyMaxCalories.ToString();
             settingsForm.Show();
+        }
+
+        private void mealTreeView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete && mealTreeView.SelectedNode != null)
+            {
+                TreeNode node = mealTreeView.SelectedNode;
+                if (node.Level != 2)
+                    return;
+
+                string[] parts = node.Text.Split(new string[] { " | " }, StringSplitOptions.RemoveEmptyEntries);
+                if (MessageBox.Show("Do you want to delete " + node.Text + " ?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    string time = parts[0];
+                    string date = node.Parent.Text.Substring(0, node.Parent.Text.IndexOf(' '));
+                    DateTime dt = DateTime.Parse(date + "T" + time);
+                    string name = parts[1];
+                    Meal meal =
+                        meals.Where(m => m.Food.Name == name && m.Date.Hour == dt.Hour && m.Date.Minute == dt.Minute)
+                            .Last();
+                    RemoveMeal(meal);
+                }
+
+            }
+        }
+
+        private void foodListView_ItemActivate(object sender, EventArgs e)
+        {
+            ListViewItem lvi = foodListView.SelectedItems[0];
+            if (MessageBox.Show("Add " + lvi.Name + " ?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                Food food = foods.Where(f => f.Name == lvi.Name).Single();
+                AddMeal(food, DateTime.Now);
+
+            }
         }
     }
 }

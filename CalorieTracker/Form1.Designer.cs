@@ -28,19 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.treeView1 = new System.Windows.Forms.TreeView();
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.mealTreeView = new System.Windows.Forms.TreeView();
+            this.foodListView = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.foodNameTextBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.caloriesPer100gTextBox = new System.Windows.Forms.TextBox();
+            this.gramsTextBox = new System.Windows.Forms.TextBox();
+            this.addFoodButton = new System.Windows.Forms.Button();
+            this.eatNowButton = new System.Windows.Forms.Button();
+            this.settingsButton = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
@@ -58,28 +58,28 @@
             this.splitContainer3.SuspendLayout();
             this.SuspendLayout();
             // 
-            // treeView1
+            // mealTreeView
             // 
-            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeView1.Location = new System.Drawing.Point(0, 0);
-            this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(207, 410);
-            this.treeView1.TabIndex = 0;
-            this.treeView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeView1_KeyDown);
+            this.mealTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mealTreeView.Location = new System.Drawing.Point(0, 0);
+            this.mealTreeView.Name = "mealTreeView";
+            this.mealTreeView.Size = new System.Drawing.Size(206, 410);
+            this.mealTreeView.TabIndex = 0;
+            this.mealTreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.mealTreeView_KeyDown);
             // 
-            // listView1
+            // foodListView
             // 
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.foodListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
-            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView1.Location = new System.Drawing.Point(0, 0);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(211, 328);
-            this.listView1.TabIndex = 1;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
-            this.listView1.ItemActivate += new System.EventHandler(this.listView1_ItemActivate);
+            this.foodListView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.foodListView.Location = new System.Drawing.Point(0, 0);
+            this.foodListView.Name = "foodListView";
+            this.foodListView.Size = new System.Drawing.Size(212, 328);
+            this.foodListView.TabIndex = 1;
+            this.foodListView.UseCompatibleStateImageBehavior = false;
+            this.foodListView.View = System.Windows.Forms.View.Details;
+            this.foodListView.ItemActivate += new System.EventHandler(this.foodListView_ItemActivate);
             // 
             // columnHeader1
             // 
@@ -90,12 +90,12 @@
             // 
             this.columnHeader2.Text = "Kcal";
             // 
-            // textBox1
+            // foodNameTextBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(92, 13);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
-            this.textBox1.TabIndex = 2;
+            this.foodNameTextBox.Location = new System.Drawing.Point(92, 13);
+            this.foodNameTextBox.Name = "foodNameTextBox";
+            this.foodNameTextBox.Size = new System.Drawing.Size(100, 20);
+            this.foodNameTextBox.TabIndex = 2;
             // 
             // label1
             // 
@@ -124,50 +124,50 @@
             this.label3.TabIndex = 5;
             this.label3.Text = "Grams";
             // 
-            // textBox2
+            // caloriesPer100gTextBox
             // 
-            this.textBox2.Location = new System.Drawing.Point(92, 37);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(100, 20);
-            this.textBox2.TabIndex = 6;
+            this.caloriesPer100gTextBox.Location = new System.Drawing.Point(92, 37);
+            this.caloriesPer100gTextBox.Name = "caloriesPer100gTextBox";
+            this.caloriesPer100gTextBox.Size = new System.Drawing.Size(100, 20);
+            this.caloriesPer100gTextBox.TabIndex = 6;
             // 
-            // textBox3
+            // gramsTextBox
             // 
-            this.textBox3.Location = new System.Drawing.Point(92, 61);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(100, 20);
-            this.textBox3.TabIndex = 7;
+            this.gramsTextBox.Location = new System.Drawing.Point(92, 61);
+            this.gramsTextBox.Name = "gramsTextBox";
+            this.gramsTextBox.Size = new System.Drawing.Size(100, 20);
+            this.gramsTextBox.TabIndex = 7;
             // 
-            // button1
+            // addFoodButton
             // 
-            this.button1.Location = new System.Drawing.Point(29, 87);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 8;
-            this.button1.Text = "Add";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.addFoodButton.Location = new System.Drawing.Point(29, 87);
+            this.addFoodButton.Name = "addFoodButton";
+            this.addFoodButton.Size = new System.Drawing.Size(75, 23);
+            this.addFoodButton.TabIndex = 8;
+            this.addFoodButton.Text = "Add";
+            this.addFoodButton.UseVisualStyleBackColor = true;
+            this.addFoodButton.Click += new System.EventHandler(this.button1_Click);
             // 
-            // button2
+            // eatNowButton
             // 
-            this.button2.Location = new System.Drawing.Point(110, 87);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 9;
-            this.button2.Text = "Eat now";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.eatNowButton.Location = new System.Drawing.Point(110, 87);
+            this.eatNowButton.Name = "eatNowButton";
+            this.eatNowButton.Size = new System.Drawing.Size(75, 23);
+            this.eatNowButton.TabIndex = 9;
+            this.eatNowButton.Text = "Eat now";
+            this.eatNowButton.UseVisualStyleBackColor = true;
+            this.eatNowButton.Click += new System.EventHandler(this.button2_Click);
             // 
-            // button3
+            // settingsButton
             // 
-            this.button3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button3.Location = new System.Drawing.Point(0, 0);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(207, 31);
-            this.button3.TabIndex = 10;
-            this.button3.Text = "Settings";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.settingsButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.settingsButton.Location = new System.Drawing.Point(0, 0);
+            this.settingsButton.Name = "settingsButton";
+            this.settingsButton.Size = new System.Drawing.Size(206, 31);
+            this.settingsButton.TabIndex = 10;
+            this.settingsButton.Text = "Settings";
+            this.settingsButton.UseVisualStyleBackColor = true;
+            this.settingsButton.Click += new System.EventHandler(this.button3_Click);
             // 
             // splitContainer1
             // 
@@ -183,7 +183,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer3);
             this.splitContainer1.Size = new System.Drawing.Size(422, 445);
-            this.splitContainer1.SplitterDistance = 207;
+            this.splitContainer1.SplitterDistance = 206;
             this.splitContainer1.TabIndex = 13;
             // 
             // splitContainer2
@@ -197,12 +197,12 @@
             // 
             // splitContainer2.Panel1
             // 
-            this.splitContainer2.Panel1.Controls.Add(this.treeView1);
+            this.splitContainer2.Panel1.Controls.Add(this.mealTreeView);
             // 
             // splitContainer2.Panel2
             // 
-            this.splitContainer2.Panel2.Controls.Add(this.button3);
-            this.splitContainer2.Size = new System.Drawing.Size(207, 445);
+            this.splitContainer2.Panel2.Controls.Add(this.settingsButton);
+            this.splitContainer2.Size = new System.Drawing.Size(206, 445);
             this.splitContainer2.SplitterDistance = 410;
             this.splitContainer2.TabIndex = 0;
             // 
@@ -217,19 +217,19 @@
             // 
             // splitContainer3.Panel1
             // 
-            this.splitContainer3.Panel1.Controls.Add(this.listView1);
+            this.splitContainer3.Panel1.Controls.Add(this.foodListView);
             // 
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.label1);
-            this.splitContainer3.Panel2.Controls.Add(this.textBox1);
+            this.splitContainer3.Panel2.Controls.Add(this.foodNameTextBox);
             this.splitContainer3.Panel2.Controls.Add(this.label2);
-            this.splitContainer3.Panel2.Controls.Add(this.textBox2);
-            this.splitContainer3.Panel2.Controls.Add(this.button1);
-            this.splitContainer3.Panel2.Controls.Add(this.button2);
-            this.splitContainer3.Panel2.Controls.Add(this.textBox3);
+            this.splitContainer3.Panel2.Controls.Add(this.caloriesPer100gTextBox);
+            this.splitContainer3.Panel2.Controls.Add(this.addFoodButton);
+            this.splitContainer3.Panel2.Controls.Add(this.eatNowButton);
+            this.splitContainer3.Panel2.Controls.Add(this.gramsTextBox);
             this.splitContainer3.Panel2.Controls.Add(this.label3);
-            this.splitContainer3.Size = new System.Drawing.Size(211, 445);
+            this.splitContainer3.Size = new System.Drawing.Size(212, 445);
             this.splitContainer3.SplitterDistance = 328;
             this.splitContainer3.TabIndex = 0;
             // 
@@ -260,19 +260,19 @@
 
         #endregion
 
-        private System.Windows.Forms.TreeView treeView1;
-        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.TreeView mealTreeView;
+        private System.Windows.Forms.ListView foodListView;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox foodNameTextBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.TextBox caloriesPer100gTextBox;
+        private System.Windows.Forms.TextBox gramsTextBox;
+        private System.Windows.Forms.Button addFoodButton;
+        private System.Windows.Forms.Button eatNowButton;
+        private System.Windows.Forms.Button settingsButton;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.SplitContainer splitContainer3;
