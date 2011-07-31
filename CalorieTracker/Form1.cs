@@ -84,8 +84,7 @@ namespace CalorieTracker
             for (DateTime date = startDate; date < endDate; date = date.AddDays(7))
             {
                 weeks.Add(new Week(date,
-                                   date.AddDays(6).Date.AddHours(23).Date.AddMinutes(59).Date.AddSeconds(59).Date.
-                                       AddMilliseconds(999)));
+                                   date.Add(new TimeSpan(6,23,59,59,999))));
             }
             foreach (Meal meal in meals)
             {
