@@ -254,6 +254,17 @@ namespace CalorieTracker
             LoadMeals();
             UpdateMealTree();
         }
+        private void RemoveFood(Food food)
+        {
+            sql.SqlConnection.Open();
+            SQLiteCommand command = sql.SqlConnection.CreateCommand();
+            command.Parameters.AddWithValue("@foodId", food.Id);
+            command.CommandText = "UPDATE food SET hidden=1 WHERE id=@foodId";
+            command.ExecuteNonQuery();
+            sql.SqlConnection.Close();
+            LoadFoods();
+            UpdateFoodList();
+        }
         private void AddFood(string name,int kcalPer100g,int grams)
         {
             sql.SqlConnection.Open();
@@ -326,6 +337,23 @@ namespace CalorieTracker
                 Food food = foods.Where(f => f.Name == lvi.Name).Single();
                 AddMeal(food, DateTime.Now);
 
+            }
+        }
+
+        private void foodListView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Delete)
+            {
+                if (foodListView.SelectedItems.Count != 1)
+                    return;
+                ListViewItem item = foodListView.SelectedItems[0];
+                string foodName = item.SubItems[0].Text;
+                int foodKcal = Int32.Parse(item.SubItems[1].Text);
+                Food food = foods.Where(f => f.Name == foodName && f.TotalKcal == foodKcal).Last();
+                if(MessageBox.Show("Do you want to delete " + food.Name + " ?","",MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    RemoveFood(food);
+                }
             }
         }
     }

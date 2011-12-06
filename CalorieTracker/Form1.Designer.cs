@@ -80,6 +80,7 @@
             this.foodListView.UseCompatibleStateImageBehavior = false;
             this.foodListView.View = System.Windows.Forms.View.Details;
             this.foodListView.ItemActivate += new System.EventHandler(this.foodListView_ItemActivate);
+            this.foodListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.foodListView_KeyDown);
             // 
             // columnHeader1
             // 
