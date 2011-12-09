@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Data.SQLite;
+using ZedGraph;
 
 namespace CalorieTracker
 {
@@ -64,6 +65,8 @@ namespace CalorieTracker
                 foodListView.Items.Add(lvi);
             }
         }
+
+        private List<Week> weeks = new List<Week>();
         private void UpdateMealTree()
         {
             mealTreeView.Nodes.Clear();
@@ -80,7 +83,7 @@ namespace CalorieTracker
             while (endDate.DayOfWeek != DayOfWeek.Sunday)
                 endDate = endDate.AddDays(1);
 
-            List<Week> weeks = new List<Week>();
+            weeks.Clear();
             for (DateTime date = startDate; date < endDate; date = date.AddDays(7))
             {
                 weeks.Add(new Week(date,
@@ -355,6 +358,34 @@ namespace CalorieTracker
                     RemoveFood(food);
                 }
             }
+        }
+
+        PlotWindow plotWindow = new PlotWindow();
+        private void plotButton_Click(object sender, EventArgs e)
+        {
+            plotWindow.zedGraphControl1.GraphPane.XAxis.Title.Text = "Date";
+            plotWindow.zedGraphControl1.GraphPane.XAxis.Type = AxisType.Date;
+            plotWindow.zedGraphControl1.GraphPane.XAxis.Scale.MajorUnit = DateUnit.Day;
+
+            plotWindow.zedGraphControl1.GraphPane.YAxis.Title.Text = "Kcal";
+            plotWindow.zedGraphControl1.GraphPane.YAxis.Type = AxisType.Linear;
+
+            PointPairList pointPairList = new PointPairList();
+
+            foreach(Week week in weeks)
+            {
+                foreach(Day day in week.Days)
+                {
+                    XDate date = new XDate(day.StartDate.Year, day.StartDate.Month, day.StartDate.Day,12,0,0);
+                    pointPairList.Add(date, day.TotalKCal);
+                }
+            }
+            plotWindow.zedGraphControl1.GraphPane.AddCurve("KCal per Day", pointPairList, Color.Black,SymbolType.Circle);
+
+            plotWindow.zedGraphControl1.RestoreScale(plotWindow.zedGraphControl1.GraphPane);
+            plotWindow.zedGraphControl1.IsShowPointValues = true;
+
+            plotWindow.Show();
         }
     }
 }
