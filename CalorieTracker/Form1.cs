@@ -360,9 +360,9 @@ namespace CalorieTracker
             }
         }
 
-        PlotWindow plotWindow = new PlotWindow();
         private void plotButton_Click(object sender, EventArgs e)
         {
+            PlotWindow plotWindow = new PlotWindow();
             plotWindow.zedGraphControl1.GraphPane.XAxis.Title.Text = "Date";
             plotWindow.zedGraphControl1.GraphPane.XAxis.Type = AxisType.Date;
             plotWindow.zedGraphControl1.GraphPane.XAxis.Scale.MajorUnit = DateUnit.Day;
@@ -376,14 +376,21 @@ namespace CalorieTracker
             {
                 foreach(Day day in week.Days)
                 {
-                    XDate date = new XDate(day.StartDate.Year, day.StartDate.Month, day.StartDate.Day,12,0,0);
-                    pointPairList.Add(date, day.TotalKCal);
+                    if (day.TotalKCal != 0)
+                    {
+                        XDate date = new XDate(day.StartDate.Year, day.StartDate.Month, day.StartDate.Day, 12, 0, 0);
+                        pointPairList.Add(date, day.TotalKCal);
+                    }
                 }
             }
             plotWindow.zedGraphControl1.GraphPane.AddCurve("KCal per Day", pointPairList, Color.Black,SymbolType.Circle);
-
             plotWindow.zedGraphControl1.RestoreScale(plotWindow.zedGraphControl1.GraphPane);
             plotWindow.zedGraphControl1.IsShowPointValues = true;
+
+
+            LineObj maxCalorieLine = new LineObj(Color.Firebrick, plotWindow.zedGraphControl1.GraphPane.XAxis.Scale.Min, DailyMaxCalories, plotWindow.zedGraphControl1.GraphPane.XAxis.Scale.Max, DailyMaxCalories);
+            maxCalorieLine.ZOrder = ZOrder.E_BehindCurves;
+            plotWindow.zedGraphControl1.GraphPane.GraphObjList.Add(maxCalorieLine);
 
             plotWindow.Show();
         }
