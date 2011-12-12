@@ -8,6 +8,13 @@ namespace CalorieTracker
 {
     class Sql
     {
-        public System.Data.SQLite.SQLiteConnection SqlConnection = new SQLiteConnection("Data Source=caloriedb.s3db");
+        public static SQLiteConnection SqlConnection = new SQLiteConnection("Data Source=caloriedb.s3db");
+        public static void ExecuteNonQuery(string commandText)
+        {
+            //since this is just sqlite it's not even worth it to protect the db against injection attacks
+            SQLiteCommand command = SqlConnection.CreateCommand();
+            command.CommandText = commandText;
+            command.ExecuteNonQuery();
+        }
     }
 }

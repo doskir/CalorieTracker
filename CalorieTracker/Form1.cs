@@ -13,45 +13,18 @@ namespace CalorieTracker
 {
     public partial class Form1 : Form
     {
-        private int DailyMaxCalories = 2000;
-        private Sql sql;
+        
         private List<Food> foods = new List<Food>();
         private List<Meal> meals = new List<Meal>(); 
         public Form1()
         {
             InitializeComponent();
-            sql = new Sql();
-            LoadSettings();
             LoadFoods();
             UpdateFoodList();
             LoadMeals();
             UpdateMealTree();
         }
-        private void LoadSettings()
-        {
-            sql.SqlConnection.Open();
-            SQLiteCommand command = sql.SqlConnection.CreateCommand();
-            command.CommandText = "SELECT name,value FROM settings";
-            using(SQLiteDataReader reader = command.ExecuteReader())
-            {
-                if(reader.HasRows)
-                {
-                    while(reader.Read())
-                    {
-                        string settingName = reader.GetString(0);
-                        switch(settingName)
-                        {
-                            case "dailymaxkcal":
-                                {
-                                    DailyMaxCalories = int.Parse(reader.GetString(1));
-                                    break;
-                                }
-                        }
-                    }
-                }
-            }
-            sql.SqlConnection.Close();
-        }
+
         private void UpdateFoodList()
         {
             foodListView.Items.Clear();
@@ -118,13 +91,13 @@ namespace CalorieTracker
                         TreeNode mealNode = new TreeNode(mealString);
                         dayNode.Nodes.Add(mealNode);
                     }
-                    if (day.TotalKCal > DailyMaxCalories)
+                    if (day.TotalKCal > Settings.DailyMaxCalories)
                         dayNode.BackColor = Color.Firebrick;
                     else
                         dayNode.BackColor = Color.LightGreen;
                     weekNode.Nodes.Add(dayNode);
                 }
-                if (week.TotalKCal > DailyMaxCalories*7)
+                if (week.TotalKCal > Settings.DailyMaxCalories*7)
                     weekNode.BackColor = Color.Firebrick;
                 else
                     weekNode.BackColor = Color.LightGreen;
@@ -135,8 +108,8 @@ namespace CalorieTracker
         private void LoadFoods()
         {
             foods.Clear();
-            sql.SqlConnection.Open();
-            SQLiteCommand command = sql.SqlConnection.CreateCommand();
+            
+            SQLiteCommand command = Sql.SqlConnection.CreateCommand();
             command.CommandText = "SELECT * FROM food ORDER BY name";
             using(SQLiteDataReader reader = command.ExecuteReader())
             {
@@ -154,13 +127,12 @@ namespace CalorieTracker
                     }
                 }
             }
-            sql.SqlConnection.Close();
         }
         private void LoadMeals()
         {
             meals.Clear();
-            sql.SqlConnection.Open();
-            SQLiteCommand command = sql.SqlConnection.CreateCommand();
+            
+            SQLiteCommand command = Sql.SqlConnection.CreateCommand();
             command.CommandText = "SELECT id,foodId,date FROM meals";
             using(SQLiteDataReader reader = command.ExecuteReader())
             {
@@ -177,17 +149,15 @@ namespace CalorieTracker
                     }
                 }
             }
-            sql.SqlConnection.Close();
         }
         private void AddMeal(Food food,DateTime dateTime)
         {
-            sql.SqlConnection.Open();
-            SQLiteCommand command = sql.SqlConnection.CreateCommand();
+            SQLiteCommand command = Sql.SqlConnection.CreateCommand();
             command.Parameters.AddWithValue("@foodId", food.Id);
             command.Parameters.AddWithValue("@date", dateTime);
             command.CommandText = "INSERT INTO meals (foodId,date) VALUES(@foodId,@date)";
             command.ExecuteNonQuery();
-            sql.SqlConnection.Close();
+            
             LoadMeals();
             UpdateMealTree();
         }
@@ -248,30 +218,19 @@ namespace CalorieTracker
         }
         private void RemoveMeal(Meal meal)
         {
-            sql.SqlConnection.Open();
-            SQLiteCommand command = sql.SqlConnection.CreateCommand();
-            command.Parameters.AddWithValue("@mealId", meal.Id);
-            command.CommandText = "DELETE FROM meals WHERE id=@mealId";
-            command.ExecuteNonQuery();
-            sql.SqlConnection.Close();
+            Sql.ExecuteNonQuery("DELETE FROM meals WHERE id=" + meal.Id);
             LoadMeals();
             UpdateMealTree();
         }
         private void RemoveFood(Food food)
         {
-            sql.SqlConnection.Open();
-            SQLiteCommand command = sql.SqlConnection.CreateCommand();
-            command.Parameters.AddWithValue("@foodId", food.Id);
-            command.CommandText = "UPDATE food SET hidden=1 WHERE id=@foodId";
-            command.ExecuteNonQuery();
-            sql.SqlConnection.Close();
+            Sql.ExecuteNonQuery("UPDATE food SET hidden=1 WHERE id=" + food.Id);
             LoadFoods();
             UpdateFoodList();
         }
-        private void AddFood(string name,int kcalPer100g,int grams)
+        private void AddFood(string name, int kcalPer100g, int grams)
         {
-            sql.SqlConnection.Open();
-            SQLiteCommand command = sql.SqlConnection.CreateCommand();
+            SQLiteCommand command = Sql.SqlConnection.CreateCommand();
             command.Parameters.AddWithValue("@foodName", name);
             command.Parameters.AddWithValue("@kcalPer100g", kcalPer100g);
             command.Parameters.AddWithValue("@grams", grams);
@@ -279,10 +238,11 @@ namespace CalorieTracker
             command.CommandText =
                 "INSERT INTO food (name,kcalper100g,grams,hidden) VALUES(@foodName,@kcalPer100g,@grams,@hidden)";
             command.ExecuteNonQuery();
-            sql.SqlConnection.Close();
+
             LoadFoods();
             UpdateFoodList();
         }
+
         private void button1_Click(object sender, EventArgs e)
         {
             string name = foodNameTextBox.Text;
@@ -304,7 +264,7 @@ namespace CalorieTracker
         private void button3_Click(object sender, EventArgs e)
         {
             SettingsForm settingsForm = new SettingsForm();
-            settingsForm.maskedTextBox1.Text = DailyMaxCalories.ToString();
+            settingsForm.maskedTextBox1.Text = Settings.DailyMaxCalories.ToString();
             settingsForm.Show();
         }
 
@@ -363,35 +323,6 @@ namespace CalorieTracker
         private void plotButton_Click(object sender, EventArgs e)
         {
             PlotWindow plotWindow = new PlotWindow();
-            plotWindow.zedGraphControl1.GraphPane.XAxis.Title.Text = "Date";
-            plotWindow.zedGraphControl1.GraphPane.XAxis.Type = AxisType.Date;
-            plotWindow.zedGraphControl1.GraphPane.XAxis.Scale.MajorUnit = DateUnit.Day;
-
-            plotWindow.zedGraphControl1.GraphPane.YAxis.Title.Text = "Kcal";
-            plotWindow.zedGraphControl1.GraphPane.YAxis.Type = AxisType.Linear;
-
-            PointPairList pointPairList = new PointPairList();
-
-            foreach(Week week in weeks.OrderBy(w => w.StartDate))
-            {
-                foreach(Day day in week.Days.OrderBy(d => d.StartDate))
-                {
-                    if (day.TotalKCal != 0)
-                    {
-                        XDate date = new XDate(day.StartDate.Year, day.StartDate.Month, day.StartDate.Day, 12, 0, 0);
-                        pointPairList.Add(date, day.TotalKCal);
-                    }
-                }
-            }
-            plotWindow.zedGraphControl1.GraphPane.AddCurve("KCal per Day", pointPairList, Color.Black,SymbolType.Circle);
-            plotWindow.zedGraphControl1.RestoreScale(plotWindow.zedGraphControl1.GraphPane);
-            plotWindow.zedGraphControl1.IsShowPointValues = true;
-
-
-            LineObj maxCalorieLine = new LineObj(Color.Firebrick, plotWindow.zedGraphControl1.GraphPane.XAxis.Scale.Min, DailyMaxCalories, plotWindow.zedGraphControl1.GraphPane.XAxis.Scale.Max, DailyMaxCalories);
-            maxCalorieLine.ZOrder = ZOrder.E_BehindCurves;
-            plotWindow.zedGraphControl1.GraphPane.GraphObjList.Add(maxCalorieLine);
-
             plotWindow.Show();
         }
     }

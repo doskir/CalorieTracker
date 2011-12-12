@@ -13,6 +13,10 @@ namespace CalorieTracker
         [STAThread]
         static void Main()
         {
+            //Might be the wrong place to put these
+            Sql.SqlConnection.Open();
+            Settings.LoadSettings();
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());

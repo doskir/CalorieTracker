@@ -21,15 +21,14 @@ namespace CalorieTracker
         {
             if (maskedTextBox1.Text == "")
                 return;
-            Sql sql = new Sql();
-            sql.SqlConnection.Open();
-            SQLiteCommand command = sql.SqlConnection.CreateCommand();
+            
+            SQLiteCommand command = Sql.SqlConnection.CreateCommand();
             command.Parameters.AddWithValue("@name", "dailymaxkcal");
             command.Parameters.AddWithValue("@value", maskedTextBox1.Text);
             
             command.CommandText = "UPDATE settings SET value=@value WHERE name=@name";
             command.ExecuteNonQuery();
-            sql.SqlConnection.Close();
+            
             MessageBox.Show("Please close and reopen the application to activate your personal setting.");
         }
     }
