@@ -372,9 +372,9 @@ namespace CalorieTracker
 
             PointPairList pointPairList = new PointPairList();
 
-            foreach(Week week in weeks)
+            foreach(Week week in weeks.OrderBy(w => w.StartDate))
             {
-                foreach(Day day in week.Days)
+                foreach(Day day in week.Days.OrderBy(d => d.StartDate))
                 {
                     if (day.TotalKCal != 0)
                     {
