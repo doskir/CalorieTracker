@@ -42,7 +42,26 @@ namespace CalorieTracker
         private List<Week> weeks = new List<Week>();
         private void UpdateMealTree()
         {
+            string[] splitter = new string[] {"|"};
+            List<string> expandedNodes = new List<string>();
+            foreach(TreeNode weekNode in mealTreeView.Nodes)
+            {
+                if (weekNode.IsExpanded)
+                {
+                    expandedNodes.Add(GetDateStringFromTreeNodeText(weekNode));
+                    foreach (TreeNode dayNode in weekNode.Nodes)
+                    {
+                        if (dayNode.IsExpanded)
+                            expandedNodes.Add(GetDateStringFromTreeNodeText(dayNode));
+                    }
+                }
+            }
+
+
+            mealTreeView.BeginUpdate();
+
             mealTreeView.Nodes.Clear();
+
             if (meals.Count == 0)
                 return;
             List<Meal> mealsByDate = meals.OrderBy(m => m.Date).ToList();
@@ -103,8 +122,31 @@ namespace CalorieTracker
                     weekNode.BackColor = Color.LightGreen;
                 mealTreeView.Nodes.Add(weekNode);
             }
+            foreach(TreeNode weekNode in mealTreeView.Nodes)
+            {
+                string weekNodeDateString = GetDateStringFromTreeNodeText(weekNode);
+                if(expandedNodes.Contains(weekNodeDateString))
+                {
+                    weekNode.Expand();
+                    expandedNodes.Remove(weekNodeDateString);
+                    foreach(TreeNode dayNode in weekNode.Nodes)
+                    {
+                        string dayNodeDateString = GetDateStringFromTreeNodeText(dayNode);
+                        if(expandedNodes.Contains(dayNodeDateString))
+                        {
+                            dayNode.Expand();
+                            expandedNodes.Remove(dayNodeDateString);
+                        }
+                    }
+                }
+            }
+            mealTreeView.EndUpdate();
         }
-
+        private string GetDateStringFromTreeNodeText(TreeNode node)
+        {
+            string[] splitter = new string[] {"|"};
+            return node.Text.Split(splitter, StringSplitOptions.RemoveEmptyEntries)[0];
+        }
         private void LoadFoods()
         {
             foods.Clear();
