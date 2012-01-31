@@ -61,11 +61,15 @@
             // 
             // mealTreeView
             // 
+            this.mealTreeView.AllowDrop = true;
             this.mealTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mealTreeView.Location = new System.Drawing.Point(0, 0);
             this.mealTreeView.Name = "mealTreeView";
             this.mealTreeView.Size = new System.Drawing.Size(206, 410);
             this.mealTreeView.TabIndex = 0;
+            this.mealTreeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.mealTreeView_ItemDrag);
+            this.mealTreeView.DragDrop += new System.Windows.Forms.DragEventHandler(this.mealTreeView_DragDrop);
+            this.mealTreeView.DragEnter += new System.Windows.Forms.DragEventHandler(this.mealTreeView_DragEnter);
             this.mealTreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.mealTreeView_KeyDown);
             // 
             // foodListView

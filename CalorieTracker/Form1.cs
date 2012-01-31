@@ -84,7 +84,7 @@ namespace CalorieTracker
                     TreeNode dayNode = new TreeNode(dayString);
                     if (day.Contains(DateTime.Now))
                         dayNode.Expand();
-                    foreach (Meal meal in day.Meals)
+                    foreach (Meal meal in day.Meals.OrderBy(m => m.Date))
                     {
                         string mealString = meal.Date.ToString("HH:mm") + " | " + meal.Food.Name + " | "
                                             + meal.Food.TotalKcal;
@@ -275,18 +275,9 @@ namespace CalorieTracker
                 TreeNode node = mealTreeView.SelectedNode;
                 if (node.Level != 2)
                     return;
-
-                string[] parts = node.Text.Split(new string[] { " | " }, StringSplitOptions.RemoveEmptyEntries);
                 if (MessageBox.Show("Do you want to delete " + node.Text + " ?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    string time = parts[0];
-                    string date = node.Parent.Text.Substring(0, node.Parent.Text.IndexOf(' '));
-                    DateTime dt = DateTime.Parse(date + "T" + time);
-                    string name = parts[1];
-                    Meal meal =
-                        meals.Where(m => m.Food.Name == name && m.Date.Hour == dt.Hour && m.Date.Minute == dt.Minute)
-                            .Last();
-                    RemoveMeal(meal);
+                    RemoveMeal(node);
                 }
 
             }
@@ -319,11 +310,78 @@ namespace CalorieTracker
                 }
             }
         }
+        private void RemoveMeal(TreeNode node)
+        {
+            string[] parts = node.Text.Split(new string[] {" | "}, StringSplitOptions.RemoveEmptyEntries);
+            string time = parts[0];
+            string date = node.Parent.Text.Substring(0, node.Parent.Text.IndexOf(' '));
+            DateTime dt = DateTime.Parse(date + "T" + time);
+            string name = parts[1];
+            Meal meal =
+                meals.Where(m => m.Food.Name == name && m.Date.Hour == dt.Hour && m.Date.Minute == dt.Minute)
+                    .Last();
+            RemoveMeal(meal);
+        }
+        private Meal GetMealFromTreeNode(TreeNode node)
+        {
+            string[] parts = node.Text.Split(new string[] { " | " }, StringSplitOptions.RemoveEmptyEntries);
+            string time = parts[0];
+            string date = node.Parent.Text.Substring(0, node.Parent.Text.IndexOf(' '));
+            DateTime dt = DateTime.Parse(date + "T" + time);
+            string name = parts[1];
+            Meal meal =
+                meals.Where(m => m.Food.Name == name && m.Date.Hour == dt.Hour && m.Date.Minute == dt.Minute)
+                    .Last();
+            return meal;
+        }
 
         private void plotButton_Click(object sender, EventArgs e)
         {
             PlotWindow plotWindow = new PlotWindow();
             plotWindow.Show();
+        }
+
+        private void mealTreeView_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            DoDragDrop(e.Item, DragDropEffects.Move);
+        }
+
+        private void mealTreeView_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+        }
+
+        private void mealTreeView_DragDrop(object sender, DragEventArgs e)
+        {
+            //should probably be replaced with a predefined format
+            TreeNode movingNode = (TreeNode) e.Data.GetData(e.Data.GetFormats()[0]);
+            TreeNode targetNode = mealTreeView.GetNodeAt(PointToClient(new Point(e.X, e.Y)));
+            if (movingNode == null || targetNode == null)
+                return;
+            //only move meal nodes, not days or weeks
+            if (movingNode.Level != 2)
+                return;
+            //do not allow moving a mealnode to a weeknode
+            if (targetNode.Level < 1 || targetNode.Level > 2)
+                return;
+            if (targetNode.Level == 2)
+                targetNode = targetNode.Parent;
+
+            string dateString = targetNode.Text.Split(new string[] {"|"}, StringSplitOptions.RemoveEmptyEntries)[0];
+            DateTime date = DateTime.Parse(dateString);
+            Meal meal = GetMealFromTreeNode(movingNode);
+            DateTime newDate = new DateTime(date.Year, date.Month, date.Day, meal.Date.Hour, meal.Date.Minute,
+                                            meal.Date.Second);
+
+            SQLiteCommand command = Sql.SqlConnection.CreateCommand();
+            command.Parameters.AddWithValue("@mealid", meal.Id);
+            command.Parameters.AddWithValue("@newDate", newDate);
+            command.CommandText =
+                "UPDATE meals SET date=@newDate WHERE id=@mealid";
+            command.ExecuteNonQuery();
+
+            LoadMeals();
+            UpdateMealTree();
         }
     }
 }
